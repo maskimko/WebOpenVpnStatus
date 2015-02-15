@@ -10,12 +10,12 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.ManagedBean;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+//import javax.annotation.ManagedBean;
+//import javax.annotation.PreDestroy;
+//import javax.enterprise.context.RequestScoped;
 import org.slf4j.LoggerFactory;
 import ua.pp.msk.openvpnstatus.api.Client;
 import ua.pp.msk.openvpnstatus.api.Route;
@@ -29,8 +29,7 @@ import ua.pp.msk.openvpnstatus.net.ManagementConnection;
  *
  * @author Maksym Shkolnyi aka maskimko
  */
-@ManagedBean("status")
-@RequestScoped
+@ManagedBean()
 public class StatusBean {
 
     private Status status;
@@ -41,14 +40,23 @@ public class StatusBean {
     public StatusBean() {
     }
 
-    public void serPort(int port) {
+    public void setPort(int port) {
         this.port = port;
     }
 
+    public int getPort(){
+        return port;
+    }
+    
     public void setHost(String host) throws UnknownHostException {
         this.host = Inet4Address.getByName(host);
     }
+    public String getHost(){
+        
+        return (host == null) ? "" : host.getHostName();
+    }
 
+    
     public void setHost(InetAddress addr) {
         this.host = addr;
     }
@@ -58,8 +66,24 @@ public class StatusBean {
             if (mc == null) {
                 mc = ManagementConnection.getConnection(host, port);
             }
+            if (!mc.isConnected()){
+                mc.connect();
+            }
             status = mc.getStatus();
         }
+    }
+    
+    public Status getStatus(){
+        try {
+        checkStatus();
+        } catch (IOException ex) {
+             LoggerFactory.getLogger(StatusBean.class.getName()).warn("IO error", ex);
+        } catch (OpenVpnIOException ex ) {
+              LoggerFactory.getLogger(StatusBean.class.getName()).warn("VPN IO error", ex);
+        } catch (OpenVpnParseException ex) {
+             LoggerFactory.getLogger(StatusBean.class.getName()).warn("Parsing error", ex);
+        }
+        return status;
     }
 
     public Calendar getUpdateTime() {
@@ -107,14 +131,18 @@ public class StatusBean {
         return routes;
     }
 
-    @PreDestroy
-    public void tearDown() {
-        if (mc != null) {
-            try {
-                mc.close();
-            } catch (Exception ex) {
-                LoggerFactory.getLogger(StatusBean.class.getName()).warn("Cannot close the connection", ex);
-            }
-        }
+    public String process(){
+        return "status.xhtml";
     }
+    
+//    @PreDestroy
+//    public void tearDown() {
+//        if (mc != null) {
+//            try {
+//                mc.close();
+//            } catch (Exception ex) {
+//                LoggerFactory.getLogger(StatusBean.class.getName()).warn("Cannot close the connection", ex);
+//            }
+//        }
+//    }
 }
