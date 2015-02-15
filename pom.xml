@@ -4,7 +4,7 @@
   
     <groupId>ua.pp.msk.javaee7</groupId>
     <artifactId>WebOpenVpnStatus</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>war</packaging>
 
     <name>WebOpenVpnStatus</name>
@@ -25,6 +25,12 @@
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
