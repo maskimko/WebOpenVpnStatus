@@ -70,13 +70,13 @@ public class StatusBean {
             try {
                 if (mc == null) {
                     if (host == null) {
-                        ResourceBundle openVpnBundle = ResourceBundle.getBundle("server/OpenVpn");
+                        ResourceBundle openVpnBundle = ResourceBundle.getBundle("ua/pp/msk/server/OpenVpn");
                         if (openVpnBundle.containsKey("host")) {
                             host = InetAddress.getByName(openVpnBundle.getString("host"));
                         }
                     }
                     if (port < 1) {
-                        ResourceBundle openVpnBundle = ResourceBundle.getBundle("server/OpenVpn");
+                        ResourceBundle openVpnBundle = ResourceBundle.getBundle("ua/pp/msk/server/OpenVpn");
                         if (openVpnBundle.containsKey("port")) {
                             port = Integer.parseInt(openVpnBundle.getString("port"));
                         }

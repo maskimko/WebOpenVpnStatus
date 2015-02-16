@@ -3,17 +3,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
-        <title>Facelet Title</title>
+        <title>#{msg.title}</title>
     </h:head>
     <h:body>
-        Hello from Facelets
         <h:form>
             <h:panelGrid columns="2">
-                <h:outputLabel value="Hostname"/>
+                <h:outputLabel value="#{msg.hostname}"/>
                 <h:inputText value="#{statusBean.host}"/>
-                <h:outputLabel value="Port"/>
+                <h:outputLabel value="#{msg.port}"/>
                 <h:inputText value="#{statusBean.port}"/>
-                <h:commandButton value="Get info" action="#{statusBean.process}"/>
+                <h:commandButton value="#{msg.statusButton}" action="#{statusBean.process}"/>
             </h:panelGrid>
         </h:form>
     </h:body>

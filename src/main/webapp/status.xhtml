@@ -9,36 +9,36 @@
     <h:body>
         <h:outputStylesheet library="css" name="table.css" />
         <h:panelGrid columns="2" columnClasses="section,data">
-            <h:outputLabel value="Updated"/>
+            <h:outputLabel value="#{msg.updated}"/>
             <h:outputText value="#{statusBean.status.updateTime.time}">
                 <f:convertDateTime pattern="HH:mm:ss dd/MM/YYYY"/>
             </h:outputText>
-            <h:outputLabel value="Clients"/>
+            <h:outputLabel value="#{msg.clients}"/>
             <h:dataTable value="#{statusBean.connectedClients}" var="client">
                 <h:column headerClass="commonName">
                     <f:facet name="header">
-                        <h:outputText value="Common name"/>
+                        <h:outputText value="#{msg.cn}"/>
                     </f:facet>
                     <h:outputText value="#{client.commonName}"/>
                 </h:column>
                
                 <h:column headerClass="ipAddr">
                     <f:facet name="header">
-                        <h:outputText value="IP address"/>
+                        <h:outputText value="#{msg.realIP}"/>
                     </f:facet>
                     <h:outputText value="#{client.ipAddress.hostString}">
                     </h:outputText>
                 </h:column>
                 <h:column headerClass="port">
                     <f:facet name="header">
-                        <h:outputText value="Port"/>
+                        <h:outputText value="#{msg.port}"/>
                     </f:facet>
                     <h:outputText value="#{client.ipAddress.port}">
                     </h:outputText>
                 </h:column>
                 <h:column  headerClass="connectedSince">
                     <f:facet name="header">
-                        <h:outputText value="Connected Since"/>
+                        <h:outputText value="#{msg.cs}"/>
                     </f:facet>
                     <h:outputText value="#{client.connectedSince.time}">
                         <f:convertDateTime  pattern="HH:mm:ss dd/MM/YYYY"/>
@@ -46,41 +46,41 @@
                 </h:column>
                  <h:column headerClass="bytes">
                     <f:facet name="header">
-                        <h:outputText value="Received bytes"/>
+                        <h:outputText value="#{msg.rb}"/>
                     </f:facet>
                     <h:outputText value="#{client.receivedBytes}"/>
                 </h:column>
                 <h:column headerClass="bytes">
                     <f:facet name="header">
-                        <h:outputText value="Sent bytes"/>
+                        <h:outputText value="#{msg.sb}"/>
                     </f:facet>
                     <h:outputText value="#{client.sentBytes}"/>
                 </h:column>
             </h:dataTable>
-            <h:outputLabel value="Routes"/>
+            <h:outputLabel value="#{msg.routes}"/>
             <h:dataTable value="#{statusBean.routes}" var="route">
                 <h:column headerClass="commonName">
                     <f:facet name="header" >
-                        <h:outputText value="Common name" />
+                        <h:outputText value="#{msg.cn}" />
                     </f:facet>
                     <h:outputText value="#{route.commonName} "/>
                 </h:column>
                 <h:column headerClass="ipAddr">
                     <f:facet name="header">
-                        <h:outputText value="Real IP address"/>
+                        <h:outputText value="#{msg.realIP}"/>
                     </f:facet>
                     <h:outputText value="#{route.realIpAddress.hostString}"/>
                 </h:column>
                 <h:column headerClass="port">
                     <f:facet name="header">
-                        <h:outputText value="Port"/>
+                        <h:outputText value="#{msg.port}"/>
                     </f:facet>
                     <h:outputText value="#{route.realIpAddress.port}"/>
                 </h:column>
                
                 <h:column headerClass="connectedSince">
                     <f:facet name="header">
-                        <h:outputText value="Connected since"/>
+                        <h:outputText value="#{msg.cs}"/>
                     </f:facet>
                     <h:outputText value="#{route.lastRef.time}">
                         <f:convertDateTime  pattern="HH:mm:ss dd/MM/YYYY"/>
@@ -88,7 +88,7 @@
                 </h:column>
                  <h:column >
                     <f:facet name="header">
-                        <h:outputText value="VPN IP address"/>
+                        <h:outputText value="#{msg.vpnIP}"/>
                     </f:facet>
                     <h:outputText value="#{route.virtualIpAddress.hostAddress}"/>
                 </h:column>

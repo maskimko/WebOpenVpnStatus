@@ -17,7 +17,7 @@
 
 
 
-.data td, .data table, .data th {
+.data td, .data table, .data th{
     background: yellow;
     border: 2px solid red;
     border-collapse: collapse;    
@@ -27,6 +27,12 @@
     color: red;
     text-align: center;
     background: black;
+}
+
+.data th:hover {
+    color: #dd8800;
+    text-align: center;
+    background: #333333;
 }
 
 .data table {
