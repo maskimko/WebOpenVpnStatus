@@ -7,47 +7,36 @@
         <title>Facelet Title</title>
     </h:head>
     <h:body>
-
-        <h:panelGrid columns="2">
+        <h:outputStylesheet library="css" name="table.css" />
+        <h:panelGrid columns="2" columnClasses="section,data">
             <h:outputLabel value="Updated"/>
             <h:outputText value="#{statusBean.status.updateTime.time}">
                 <f:convertDateTime pattern="HH:mm:ss dd/MM/YYYY"/>
             </h:outputText>
             <h:outputLabel value="Clients"/>
             <h:dataTable value="#{statusBean.connectedClients}" var="client">
-                <h:column >
+                <h:column headerClass="commonName">
                     <f:facet name="header">
                         <h:outputText value="Common name"/>
                     </f:facet>
                     <h:outputText value="#{client.commonName}"/>
                 </h:column>
-                <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Received bytes"/>
-                    </f:facet>
-                    <h:outputText value="#{client.receivedBytes}"/>
-                </h:column>
-                <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Sent bytes"/>
-                    </f:facet>
-                    <h:outputText value="#{client.sentBytes}"/>
-                </h:column>
-                <h:column>
+               
+                <h:column headerClass="ipAddr">
                     <f:facet name="header">
                         <h:outputText value="IP address"/>
                     </f:facet>
                     <h:outputText value="#{client.ipAddress.hostString}">
                     </h:outputText>
                 </h:column>
-                                <h:column>
+                <h:column headerClass="port">
                     <f:facet name="header">
                         <h:outputText value="Port"/>
                     </f:facet>
-                                    <h:outputText value="#{client.ipAddress.port}">
+                    <h:outputText value="#{client.ipAddress.port}">
                     </h:outputText>
                 </h:column>
-                <h:column>
+                <h:column  headerClass="connectedSince">
                     <f:facet name="header">
                         <h:outputText value="Connected Since"/>
                     </f:facet>
@@ -55,40 +44,53 @@
                         <f:convertDateTime  pattern="HH:mm:ss dd/MM/YYYY"/>
                     </h:outputText>
                 </h:column>
+                 <h:column headerClass="bytes">
+                    <f:facet name="header">
+                        <h:outputText value="Received bytes"/>
+                    </f:facet>
+                    <h:outputText value="#{client.receivedBytes}"/>
+                </h:column>
+                <h:column headerClass="bytes">
+                    <f:facet name="header">
+                        <h:outputText value="Sent bytes"/>
+                    </f:facet>
+                    <h:outputText value="#{client.sentBytes}"/>
+                </h:column>
             </h:dataTable>
             <h:outputLabel value="Routes"/>
             <h:dataTable value="#{statusBean.routes}" var="route">
-                <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="Common name"/>
+                <h:column headerClass="commonName">
+                    <f:facet name="header" >
+                        <h:outputText value="Common name" />
                     </f:facet>
-                    <h:outputText value="#{route.commonName}"/>
+                    <h:outputText value="#{route.commonName} "/>
                 </h:column>
-                 <h:column>
+                <h:column headerClass="ipAddr">
                     <f:facet name="header">
                         <h:outputText value="Real IP address"/>
                     </f:facet>
-                     <h:outputText value="#{route.realIpAddress.hostString}"/>
+                    <h:outputText value="#{route.realIpAddress.hostString}"/>
                 </h:column>
-                 <h:column>
+                <h:column headerClass="port">
                     <f:facet name="header">
-                        <h:outputText value="Real port"/>
+                        <h:outputText value="Port"/>
                     </f:facet>
-                     <h:outputText value="#{route.realIpAddress.port}"/>
+                    <h:outputText value="#{route.realIpAddress.port}"/>
                 </h:column>
-                 <h:column>
-                    <f:facet name="header">
-                        <h:outputText value="VPN IP address"/>
-                    </f:facet>
-                     <h:outputText value="#{route.virtualIpAddress.hostAddress}"/>
-                </h:column>
-                 <h:column>
+               
+                <h:column headerClass="connectedSince">
                     <f:facet name="header">
                         <h:outputText value="Connected since"/>
                     </f:facet>
-                     <h:outputText value="#{route.lastRef.time}">
+                    <h:outputText value="#{route.lastRef.time}">
                         <f:convertDateTime  pattern="HH:mm:ss dd/MM/YYYY"/>
-                     </h:outputText>
+                    </h:outputText>
+                </h:column>
+                 <h:column >
+                    <f:facet name="header">
+                        <h:outputText value="VPN IP address"/>
+                    </f:facet>
+                    <h:outputText value="#{route.virtualIpAddress.hostAddress}"/>
                 </h:column>
             </h:dataTable>
         </h:panelGrid>

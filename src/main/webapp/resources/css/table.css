@@ -1,0 +1,54 @@
+/* 
+    Created on : Feb 16, 2015, 10:35:23 AM
+    Author     : maskimko
+*/
+
+.section {
+    font-weight: bold;
+    size: 20px;
+    float: left;
+}
+
+.data {
+    margin: 3px;
+    padding: 2px;
+    text-align: left;
+}
+
+
+
+.data td, .data table, .data th {
+    background: yellow;
+    border: 2px solid red;
+    border-collapse: collapse;    
+}
+
+.data th {
+    color: red;
+    text-align: center;
+    background: black;
+}
+
+.data table {
+    width: 100%;
+}
+
+.commonName {
+    width: 160px;
+}
+
+.ipAddr {
+   width: 100px;
+}
+
+.port {
+    width: 55px;
+}
+
+.bytes {
+    width: 70px;
+}
+
+.connectedSince{
+    width: 200px;
+}
