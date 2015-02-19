@@ -6,17 +6,21 @@
 package ua.pp.msk.openvpnstatus.web;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
-//import javax.annotation.ManagedBean;
-//import javax.annotation.PreDestroy;
-//import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import org.slf4j.LoggerFactory;
 import ua.pp.msk.openvpnstatus.api.Client;
 import ua.pp.msk.openvpnstatus.api.Route;
@@ -31,15 +35,54 @@ import ua.pp.msk.openvpnstatus.net.ManagementConnection;
  * @author Maksym Shkolnyi aka maskimko
  */
 @ManagedBean()
-public class StatusBean {
+@ViewScoped
+public class StatusBean implements Serializable{
 
-    private static Status status;
-    private static Calendar actuality;
+    private Status status;
     private int port = 0;
     private InetAddress host;
-    private Connection mc;
+    private transient Connection mc;
 
     public StatusBean() {
+    }
+
+    @PostConstruct
+    public void init() {
+        try {
+
+            if (host == null) {
+                ResourceBundle openVpnBundle = ResourceBundle.getBundle("ua/pp/msk/server/OpenVpn");
+                if (openVpnBundle.containsKey("host")) {
+                    host = InetAddress.getByName(openVpnBundle.getString("host"));
+                }
+            }
+            if (port < 1) {
+                ResourceBundle openVpnBundle = ResourceBundle.getBundle("ua/pp/msk/server/OpenVpn");
+                if (openVpnBundle.containsKey("port")) {
+                    port = Integer.parseInt(openVpnBundle.getString("port"));
+                }
+            }
+            mc = ManagementConnection.getConnection(host, port);
+
+            if (!mc.isConnected()) {
+                mc.connect();
+            }
+            
+        } 
+        catch (IOException ex) {
+            LoggerFactory.getLogger(StatusBean.class.getName()).error("Connection IO error at", ex);
+        }
+    }
+
+    @PreDestroy
+    public void tearDown() {
+        if (mc != null) {
+            try {
+                mc.close();
+            } catch (Exception ex) {
+                LoggerFactory.getLogger(StatusBean.class.getName()).error("Cannot close connection", ex);
+            }
+        }
     }
 
     public void setPort(int port) {
@@ -64,39 +107,30 @@ public class StatusBean {
     }
 
     private synchronized void checkStatus() throws OpenVpnParseException, OpenVpnIOException, IOException {
-        Calendar now = Calendar.getInstance();
-        now.add(Calendar.MINUTE, -1 * 1);
-        if (status == null || actuality == null || actuality.before(now)) {
+       
+        if (mc == null) {
+            init();
+            status = null;
+        }
+        
+        if (status == null) {
             try {
-                if (mc == null) {
-                    if (host == null) {
-                        ResourceBundle openVpnBundle = ResourceBundle.getBundle("ua/pp/msk/server/OpenVpn");
-                        if (openVpnBundle.containsKey("host")) {
-                            host = InetAddress.getByName(openVpnBundle.getString("host"));
-                        }
-                    }
-                    if (port < 1) {
-                        ResourceBundle openVpnBundle = ResourceBundle.getBundle("ua/pp/msk/server/OpenVpn");
-                        if (openVpnBundle.containsKey("port")) {
-                            port = Integer.parseInt(openVpnBundle.getString("port"));
-                        }
-                    }
-                    mc = ManagementConnection.getConnection(host, port);
-                }
-
+               
+                
                 if (!mc.isConnected()) {
-                    mc.connect();
+                    try {
+                        mc.connect();
+                    } catch (SocketException sex) {
+                         LoggerFactory.getLogger(StatusBean.class.getName()).warn("Socket error" + sex.getMessage(), sex);
+                         mc.close();
+                         init();
+                    }
                 }
                 status = mc.getStatus();
-                actuality = Calendar.getInstance();
             } catch (IOException ex) {
                 LoggerFactory.getLogger(StatusBean.class.getName()).error("Connection IO error", ex);
-            } finally {
-                try {
-                    mc.close();
-                } catch (Exception ex) {
-                    LoggerFactory.getLogger(StatusBean.class.getName()).error("Cannot close connection", ex);
-                }
+            } catch (Exception ex) {
+                 LoggerFactory.getLogger(StatusBean.class.getName()).error("Cannot repopen connection", ex);
             }
         }
     }
@@ -130,7 +164,7 @@ public class StatusBean {
     }
 
     public List<Client> getConnectedClients() {
-        List<Client> clientList = null;
+        List<Client> clientList = new ArrayList<>();
         try {
             checkStatus();
             clientList = status.getClientList();
@@ -145,7 +179,7 @@ public class StatusBean {
     }
 
     public Set<Route> getRoutes() {
-        Set<Route> routes = null;
+        Set<Route> routes = new HashSet<>();
         try {
             checkStatus();
             routes = status.getRoutes();
@@ -163,14 +197,4 @@ public class StatusBean {
         return "status.xhtml";
     }
 
-//    @PreDestroy
-//    public void tearDown() {
-//        if (mc != null) {
-//            try {
-//                mc.close();
-//            } catch (Exception ex) {
-//                LoggerFactory.getLogger(StatusBean.class.getName()).warn("Cannot close the connection", ex);
-//            }
-//        }
-//    }
 }

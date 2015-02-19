@@ -58,3 +58,8 @@
 .connectedSince{
     width: 200px;
 }
+
+.error {
+    color: red;
+    font-weight: bolder;
+}

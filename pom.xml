@@ -4,7 +4,7 @@
   
     <groupId>ua.pp.msk</groupId>
     <artifactId>WebOpenVpnStatus</artifactId>
-    <version>0.3</version>
+    <version>0.43</version>
     <packaging>war</packaging>
 
     <name>WebOpenVpnStatus</name>
@@ -55,6 +55,11 @@
                 <version>2.3</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <archive>
+                        <manifestEntries>
+                            <Version>${project.version}</Version>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
             <plugin>
