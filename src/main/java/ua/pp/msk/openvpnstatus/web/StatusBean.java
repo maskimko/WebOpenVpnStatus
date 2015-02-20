@@ -20,7 +20,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.RequestScoped;
 import org.slf4j.LoggerFactory;
 import ua.pp.msk.openvpnstatus.api.Client;
 import ua.pp.msk.openvpnstatus.api.Route;
@@ -35,8 +35,8 @@ import ua.pp.msk.openvpnstatus.net.ManagementConnection;
  * @author Maksym Shkolnyi aka maskimko
  */
 @ManagedBean()
-@ViewScoped
-public class StatusBean implements Serializable{
+@RequestScoped
+public class StatusBean implements Serializable {
 
     private Status status;
     private int port = 0;
@@ -67,9 +67,8 @@ public class StatusBean implements Serializable{
             if (!mc.isConnected()) {
                 mc.connect();
             }
-            
-        } 
-        catch (IOException ex) {
+
+        } catch (IOException ex) {
             LoggerFactory.getLogger(StatusBean.class.getName()).error("Connection IO error at", ex);
         }
     }
@@ -107,30 +106,26 @@ public class StatusBean implements Serializable{
     }
 
     private synchronized void checkStatus() throws OpenVpnParseException, OpenVpnIOException, IOException {
-       
+
         if (mc == null) {
             init();
             status = null;
         }
-        
+
         if (status == null) {
             try {
-               
-                
-                if (!mc.isConnected()) {
-                    try {
-                        mc.connect();
-                    } catch (SocketException sex) {
-                         LoggerFactory.getLogger(StatusBean.class.getName()).warn("Socket error" + sex.getMessage(), sex);
-                         mc.close();
-                         init();
-                    }
+                try {
+                    mc.connect();
+                } catch (SocketException sex) {
+                    LoggerFactory.getLogger(StatusBean.class.getName()).warn("Socket error" + sex.getMessage(), sex);
+                    mc.close();
+                    init();
                 }
                 status = mc.getStatus();
             } catch (IOException ex) {
-                LoggerFactory.getLogger(StatusBean.class.getName()).error("Connection IO error", ex);
+                LoggerFactory.getLogger(StatusBean.class.getName()).error("Connection IO error, reconnecting...", ex);
             } catch (Exception ex) {
-                 LoggerFactory.getLogger(StatusBean.class.getName()).error("Cannot repopen connection", ex);
+                LoggerFactory.getLogger(StatusBean.class.getName()).error("Cannot repopen connection", ex);
             }
         }
     }
